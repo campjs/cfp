@@ -6,12 +6,32 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.campjs-cfp-echo.rule=Host(`cfp.campjs.org`)"
+      - "traefik.http.routers.campjs-cfp-echo.rule=Host(`campjs-cfp-echo.p2.network`)"
       - "traefik.http.routers.campjs-cfp-echo.entrypoints=websecure"
       - "traefik.http.routers.campjs-cfp-echo.tls=true"
-      - "traefik.http.routers.campjs-cfp-echo.tls.certresolver=campjs"
-      - "traefik.http.routers.campjs-cfp-echo.tls.domains[0].main=cfp.campjs.org"
+      - "traefik.http.routers.campjs-cfp-echo.tls.certresolver=p2"
+      - "traefik.http.routers.campjs-cfp-echo.tls.domains[0].main=snappy.p2.network"
+    networks:
+      default:
+      traefik:
 
+  pretalx:
+    image: pretalx/standalone:latest # ghcr.io/thepatrick/pretalx-docker:SOME_VERSION
+    container_name: pretalx
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - /opt/p2-network/campjs-cfp/cfg/pretalx.cfg:/etc/pretalx/pretalx.cfg:ro
+      - /opt/p2-network/campjs-cfp/pretalx-data/:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.campjs-cfp-pretalx.rule=Host(`cfp.campjs.org`)"
+      - "traefik.http.routers.campjs-cfp-pretalx.entrypoints=websecure"
+      - "traefik.http.routers.campjs-cfp-pretalx.tls=true"
+      - "traefik.http.routers.campjs-cfp-pretalx.tls.certresolver=campjs"
+      - "traefik.http.routers.campjs-cfp-pretalx.tls.domains[0].main=cfp.campjs.org"
     networks:
       default:
       traefik:
@@ -27,7 +47,12 @@ services:
       MYSQL_USER: pretalx
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_USER_PASSWORD_FILE: /run/secrets/mysql_user_password
-    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    command:
+      [
+        "mysqld",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+      ]
     secrets:
       - mysql_user_password
       - mysql_root_password
