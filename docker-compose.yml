@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  cfp:
+    image: traefik/whoami:v1.10.1
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oauth2-proxy-echo.rule=Host(`cfp.campjs.org`)"
+      - "traefik.http.routers.oauth2-proxy-echo.entrypoints=websecure"
+      - "traefik.http.routers.oauth2-proxy-echo.tls=true"
+      - "traefik.http.routers.oauth2-proxy-echo.tls.certresolver=campjs"
+      - "traefik.http.routers.oauth2-proxy-echo.tls.domains[0].main=cfp.campjs.org"
+
+    networks:
+      default:
+      traefik:
+
+networks:
+  traefik:
+    name: traefik_default
+    external: true
