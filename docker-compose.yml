@@ -16,6 +16,22 @@ services:
       default:
       traefik:
 
+  db:
+    image: mysql:latest
+    container_name: pretalx-db
+    restart: unless-stopped
+    volumes:
+      - "/opt/p2-network/pretalx-db/:/var/lib/mysql"
+    environment:
+      MYSQL_DATABASE: pretalx
+      MYSQL_USER: pretalx
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_USER_PASSWORD_FILE: /run/secrets/mysql_user_password
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    secrets:
+      - mysql_user_password
+      - mysql_root_password
+
   redis:
     image: redis:7.0.12-bookworm
     container_name: pretalx-redis
@@ -23,8 +39,13 @@ services:
     volumes:
       - "/opt/p2-network/pretalx-redis/:/data"
 
-
 networks:
   traefik:
     name: traefik_default
     external: true
+
+secrets:
+  mysql_root_password:
+    file: /opt/p2-network/run/DOCKER_CFP_MYSQL_ROOT_PASSWORD
+  mysql_user_password:
+    file: /opt/p2-network/run/DOCKER_CFP_MYSQL_USER_PASSWORD
