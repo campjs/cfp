@@ -16,7 +16,7 @@ services:
       traefik:
 
   pretalx:
-    image: pretalx/standalone:latest # ghcr.io/thepatrick/pretalx-docker:SOME_VERSION
+    image: ghcr.io/thepatrick/pretalx-docker:testing
     container_name: pretalx
     restart: unless-stopped
     depends_on:
