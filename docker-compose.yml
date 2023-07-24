@@ -16,6 +16,14 @@ services:
       default:
       traefik:
 
+  redis:
+    image: redis:7.0.12-bookworm
+    container_name: pretalx-redis
+    restart: unless-stopped
+    volumes:
+      - "/opt/p2-network/pretalx-redis/:/data"
+
+
 networks:
   traefik:
     name: traefik_default
