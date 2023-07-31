@@ -1,6 +1,21 @@
 version: "3"
 
 services:
+  media:
+    image: nginx:1.25.1-bookworm
+    restart: unless-stopped
+    volumes:
+      - /opt/p2-network/campjs-cfp/pretalx-data/media/:/usr/share/nginx/html/media
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.campjs-cfp-media.rule=(Host(`cfp.campjs.org`) && PathPrefix(`/media`))"
+      - "traefik.http.routers.campjs-cfp-media.entrypoints=websecure"
+      - "traefik.http.routers.campjs-cfp-media.tls=true"
+      - "traefik.http.routers.campjs-cfp-media.tls.certresolver=campjs"
+      - "traefik.http.routers.campjs-cfp-media.tls.domains[0].main=cfp.campjs.org" 
+    networks:
+      traefik:
+
   pretalx:
     image: ghcr.io/thepatrick/pretalx-docker:0168987
     container_name: pretalx
@@ -22,7 +37,6 @@ services:
       - "traefik.http.routers.campjs-cfp-redir.rule=Host(`cfp.campjs.org`)"
       - "traefik.http.routers.campjs-cfp-redir.middlewares=redirect-to-https@docker"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      
     networks:
       default:
       traefik:
