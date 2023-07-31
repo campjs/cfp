@@ -1,20 +1,6 @@
 version: "3"
 
 services:
-  cfp:
-    image: traefik/whoami:v1.10.1
-    restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.campjs-cfp-echo.rule=Host(`campjs-cfp-echo.p2.network`)"
-      - "traefik.http.routers.campjs-cfp-echo.entrypoints=websecure"
-      - "traefik.http.routers.campjs-cfp-echo.tls=true"
-      - "traefik.http.routers.campjs-cfp-echo.tls.certresolver=p2"
-      - "traefik.http.routers.campjs-cfp-echo.tls.domains[0].main=snappy.p2.network"
-    networks:
-      default:
-      traefik:
-
   pretalx:
     image: ghcr.io/thepatrick/pretalx-docker:0168987
     container_name: pretalx
