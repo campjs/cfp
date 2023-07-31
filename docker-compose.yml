@@ -31,7 +31,12 @@ services:
       - "traefik.http.routers.campjs-cfp-pretalx.entrypoints=websecure"
       - "traefik.http.routers.campjs-cfp-pretalx.tls=true"
       - "traefik.http.routers.campjs-cfp-pretalx.tls.certresolver=campjs"
-      - "traefik.http.routers.campjs-cfp-pretalx.tls.domains[0].main=cfp.campjs.org"
+      - "traefik.http.routers.campjs-cfp-pretalx.tls.domains[0].main=cfp.campjs.org" 
+      - "traefik.http.routers.campjs-cfp-redir.entrypoints=web"
+      - "traefik.http.routers.campjs-cfp-redir.rule=Host(`cfp.campjs.org`)"
+      - "traefik.http.routers.campjs-cfp-redir.middlewares=redirect-to-https@docker"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      
     networks:
       default:
       traefik:
